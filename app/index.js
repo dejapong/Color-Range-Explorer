@@ -4,10 +4,23 @@ import RangeControls from "RangeControls";
 import Output from "Output";
 import ColorMap from "ColorMap";
 
-window.ColorRangeExplorer = function (id, imagePaths) {
+window.ColorRangeExplorer = function (id, options = {}) {
+
+  options = Object.assign({
+    inputSelection : null,
+    currentInput : null,
+    mapSelection : null,
+    currentMap : "rainbow",
+    levelSelection : false,
+    numLevels : 5,
+    scaleMin : 0,
+    scaleMax : 1,
+    mapMin : 0,
+    mapMax : 1,
+  }, options );
 
   let container = document.getElementById(id);
-  let rangeControls = new RangeControls();
+  let rangeControls = new RangeControls(options);
   let output = new Output(rangeControls);
 
   let extScaleControls = document.createElement("div");
@@ -29,37 +42,44 @@ window.ColorRangeExplorer = function (id, imagePaths) {
   extScaleControls.appendChild(maxInput);
 
   let extColorControls = document.createElement("div");
-  let imageLabel = document.createElement("label");
-  let imageSelect = document.createElement("select");
+  let inputLabel = document.createElement("label");
+  let inputSelect = document.createElement("select");
   let mapLabel = document.createElement("label");
   let mapSelect = document.createElement("select");
   let levelsLabel = document.createElement("label");
   let levelsInput = document.createElement("input");
 
-  for (let imagePath of imagePaths) {
-    let option = document.createElement("option");
-    option.value = imagePath;
-    option.innerHTML = imagePath;
-    imageSelect.appendChild(option);
-  }
-
-  for (let type in ColorMap.types) {
-    let option = document.createElement("option");
-    option.value = type;
-    option.innerHTML = type;
-    mapSelect.appendChild(option);
-  }
-
-  imageLabel.innerHTML = "Input";
+  extColorControls.className = "colorRangeControls";
+  inputLabel.innerHTML = "Input";
   mapLabel.innerHTML = "Map";
   levelsLabel.innerHTML = "Levels";
+  levelsInput.size = 5;
 
-  extColorControls.appendChild(imageLabel);
-  extColorControls.appendChild(imageSelect);
-  extColorControls.appendChild(mapLabel);
-  extColorControls.appendChild(mapSelect);
-  extColorControls.appendChild(levelsLabel);
-  extColorControls.appendChild(levelsInput);
+  if (options.inputSelection) {
+    for (let inputPath of options.inputSelection) {
+      let option = document.createElement("option");
+      option.value = inputPath;
+      option.innerHTML = inputPath;
+      inputSelect.appendChild(option);
+    }
+    extColorControls.appendChild(inputLabel);
+    extColorControls.appendChild(inputSelect);
+  }
+
+  if (options.mapSelection) {
+    for (let type of options.mapSelection) {
+      let option = document.createElement("option");
+      option.value = type;
+      option.innerHTML = type;
+      mapSelect.appendChild(option);
+    }
+    extColorControls.appendChild(mapLabel);
+    extColorControls.appendChild(mapSelect);
+  }
+  if (options.levelSelection) {
+    extColorControls.appendChild(levelsLabel);
+    extColorControls.appendChild(levelsInput);
+  }
 
   container.appendChild(extColorControls);
   container.appendChild(output.container);
@@ -94,7 +114,7 @@ window.ColorRangeExplorer = function (id, imagePaths) {
     rangeControls.reset();
   });
 
-  imageSelect.addEventListener("change", function (e) {
+  inputSelect.addEventListener("change", function (e) {
     output.loadImage(this.value);
   });
 
@@ -104,5 +124,13 @@ window.ColorRangeExplorer = function (id, imagePaths) {
     output.redraw();
   });
 
-  output.loadImage(imageSelect.value);
+  if (options.currentInput) {
+    output.loadImage(options.currentInput);
+  }
+
+  if (options.currentMap) {
+    rangeControls.map.setType(options.currentMap);
+  }
 }
+
+window.ColorRangeExplorer.COLOR_MAP_TYPES = Object.keys(ColorMap.types);

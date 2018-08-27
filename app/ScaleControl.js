@@ -2,11 +2,13 @@ import BaseControl from "BaseControl";
 
 export default ScaleControl;
 
-function ScaleControl(handleValues) {
+function ScaleControl(min, max) {
   BaseControl.call(this);
   this.numMajorTicks = 5;
   this.numMinorDivs = 10;
   this.dX = 0;
+  this.min = min;
+  this.max = max;
 }
 
 ScaleControl.prototype = Object.create(BaseControl.prototype);

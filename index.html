@@ -33,6 +33,16 @@
         padding: 3px;
         border-radius: 3px;
       }
+      .colorRangeControls {
+        display: flex;
+      }
+      .colorRangeControls select{
+        max-width: 100px;
+      }
+      .colorRangeControls label{
+        margin-left:10px;
+        margin-right:3px;
+      }
     </style>
   </head>
   <body>
@@ -40,7 +50,16 @@
       <div id="selector"></div>
       <script type="text/javascript" src="dist/colorRangeExplorer.min.js"></script>
       <script type="text/javascript">
-        let cre = new ColorRangeExplorer("selector", ["data/f15cfd.png", "data/sfSouth.png"]);
+        let cre = new ColorRangeExplorer("selector", {
+          inputSelection : ["data/f15cfd.png", "data/sfSouth.png"],
+          // currentInput : "data/f15cfd.png",
+          currentInput : "data/sfSouth.png",
+          mapSelection : [ "rainbow", "heat", "twoColor", "terrain" ],
+          // currentMap : "rainbow",
+          currentMap : "terrain",
+          levelSelection : true,
+          numLevels : 100
+        });
       </script>
     </div>
   </body>

@@ -2,7 +2,7 @@ import BaseControl from "BaseControl";
 
 export default ColorControl;
 
-function ColorControl(handleValues) {
+function ColorControl() {
   BaseControl.call(this);
   this.x = 0;
   this.y = 0;

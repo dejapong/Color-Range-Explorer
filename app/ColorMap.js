@@ -37,10 +37,24 @@ ColorMap.types = {
   },
   "terrain" : function(value) {
     let rnValue = this._recodedNormalizedValue(value);
-    let red = rnValue > 0.25 ? 0.25 : 0;
-    let green = rnValue > 0.25 ? 1-rnValue : 0;
-    let blue = rnValue < 0.25 ? rnValue * 4 + .25 : 0.25;
-    return this._clippedNormalizedUint8Array([red, green, blue, 1.0]);
+    let out = [0, 0, 0, 1.0];
+    if (rnValue < .25) {
+      out[1] = rnValue * 3;
+      out[2] = rnValue * 4 + .25;
+    } else if (rnValue < 0.3) {
+      out[0] = 0.9 * rnValue * 3.3;
+      out[1] = 0.9 * rnValue * 3.3;
+      out[2] = 0.7 * rnValue * 3.3;
+    } else if (rnValue < 0.8) {
+      out[0] = 0.2 * (0.5 - rnValue);
+      out[1] = 0.8 * (0.8 - rnValue);
+      out[2] = 0.3 * (0.5 - rnValue);
+    } else {
+      out[0] = (rnValue - 0.8)/0.2;
+      out[1] = (rnValue - 0.8)/0.2;
+      out[2] = (rnValue - 0.8)/0.2;
+    }
+    return this._clippedNormalizedUint8Array(out);
   }
 }
 

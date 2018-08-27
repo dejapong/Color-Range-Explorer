@@ -6,8 +6,18 @@ import ColorMap from "ColorMap";
 
 export default RangeControls;
 
-function RangeControls(id, map, width = 400, height = 70) {
+function RangeControls(options, width = 400, height = 70) {
+
 	EventEmitter.call(this);
+
+	options = Object.assign({
+		scaleMin : 0,
+		scaleMax : 1,
+		mapMin : 0,
+		mapMax : 1,
+    numLevels : 5
+  }, options );
+
 	this.container = document.createElement("div");
 	this.canvas = document.createElement("canvas");
 	this.controls = document.createElement("div");
@@ -19,12 +29,10 @@ function RangeControls(id, map, width = 400, height = 70) {
 	this.width = width;
 	this.height = height;
 
-	this.colorBar = new ColorControl([0, 1]);
-	this.scale = new ScaleControl([0, 1]);
-	this.map = new ColorMap(0, 1, 10);
-	this.userMouse = {
-		down : false
-	};
+	this.colorBar = new ColorControl();
+	this.scale = new ScaleControl(options.scaleMin, options.scaleMax);
+	this.map = new ColorMap(options.mapMin, options.mapMax, options.numLevels);
+	this.userMouse = { down : false };
 
 	window.addEventListener("mousemove", this._onMouseMove.bind(this));
 	window.addEventListener("mousedown", this._onMouseDown.bind(this));
