@@ -1,0 +1,51 @@
+<html>
+  <head>
+    <style>
+      body {
+        text-align: center;
+      }
+      #container {
+        margin: auto;
+        width: 450px;
+      }
+      .colorRangeOutput {
+        cursor: crosshair;
+        background:#eee;
+      }
+      .colorRangeMinInput,.colorRangeMaxInput {
+        padding:3px;
+        text-align: right;
+        font-family: monospace;
+        border: 1px solid #000;
+      }
+      .colorRangeMinInput {
+        border-radius: 0px 10px 0px 0px;
+        border-left-width: 2;
+        float:left;
+      }
+      .colorRangeMaxInput {
+        border-radius: 10px 0px 0px 0px;
+        border-right-width: 2;
+        float:right;
+      }
+      .colorRangeTooltip {
+        background: #ffffff;
+        padding: 3px;
+        border-radius: 3px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="container">
+      <div id="selector"></div>
+      <script type="text/javascript" src="js/eventEmitter.js"></script>
+      <script type="text/javascript" src="js/output.js"></script>
+      <script type="text/javascript" src="js/colorMap.js"></script>
+      <script type="text/javascript" src="js/baseControl.js"></script>
+      <script type="text/javascript" src="js/colorControl.js"></script>
+      <script type="text/javascript" src="js/scaleControl.js"></script>
+      <script type="text/javascript" src="js/rangeControls.js"></script>
+      <script type="text/javascript" src="js/index.js"></script>
+    </div>
+  </body>
+</html>
