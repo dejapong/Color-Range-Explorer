@@ -1,6 +1,12 @@
 "use strict";
+import EventEmitter from "EventEmitter";
+import ColorControl from "ColorControl";
+import ScaleControl from "ScaleControl";
+import ColorMap from "ColorMap";
 
-var RangeControls = function(id, map, width = 400, height = 70) {
+export default RangeControls;
+
+function RangeControls(id, map, width = 400, height = 70) {
 	EventEmitter.call(this);
 	this.container = document.createElement("div");
 	this.canvas = document.createElement("canvas");

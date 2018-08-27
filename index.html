@@ -38,14 +38,10 @@
   <body>
     <div id="container">
       <div id="selector"></div>
-      <script type="text/javascript" src="js/eventEmitter.js"></script>
-      <script type="text/javascript" src="js/output.js"></script>
-      <script type="text/javascript" src="js/colorMap.js"></script>
-      <script type="text/javascript" src="js/baseControl.js"></script>
-      <script type="text/javascript" src="js/colorControl.js"></script>
-      <script type="text/javascript" src="js/scaleControl.js"></script>
-      <script type="text/javascript" src="js/rangeControls.js"></script>
-      <script type="text/javascript" src="js/index.js"></script>
+      <script type="text/javascript" src="dist/colorRangeExplorer.min.js"></script>
+      <script type="text/javascript">
+        let cre = new ColorRangeExplorer("selector", ["data/f15cfd.png", "data/sfSouth.png"]);
+      </script>
     </div>
   </body>
 </html>

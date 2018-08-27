@@ -1,4 +1,8 @@
-var ScaleControl = function(handleValues) {
+import BaseControl from "BaseControl";
+
+export default ScaleControl;
+
+function ScaleControl(handleValues) {
   BaseControl.call(this);
   this.numMajorTicks = 5;
   this.numMinorDivs = 10;

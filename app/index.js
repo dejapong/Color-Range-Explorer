@@ -1,6 +1,10 @@
 "use strict"
 
-function colorRangeSelector(id, imagePaths) {
+import RangeControls from "RangeControls";
+import Output from "Output";
+import ColorMap from "ColorMap";
+
+window.ColorRangeExplorer = function (id, imagePaths) {
 
   let container = document.getElementById(id);
   let rangeControls = new RangeControls();
@@ -102,5 +106,3 @@ function colorRangeSelector(id, imagePaths) {
 
   output.loadImage(imageSelect.value);
 }
-
-let selector = colorRangeSelector("selector", ["data/f15cfd.png", "data/sfSouth.png"]);

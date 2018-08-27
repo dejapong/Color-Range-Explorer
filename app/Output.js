@@ -1,3 +1,7 @@
+import EventEmitter from "EventEmitter";
+
+export default Output;
+
 function Output(selector) {
   EventEmitter.call(this);
 

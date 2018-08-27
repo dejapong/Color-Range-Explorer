@@ -1,4 +1,8 @@
-var BaseControl = function() {
+import EventEmitter from "EventEmitter";
+
+export default BaseControl;
+
+function BaseControl() {
   EventEmitter.call(this);
   this.x = 0;
   this.y = 0;
@@ -8,6 +12,7 @@ var BaseControl = function() {
   this.max = 1;
   this.hovering = false;
 }
+
 
 BaseControl.prototype = Object.create(EventEmitter.prototype);
 

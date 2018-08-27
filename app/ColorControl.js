@@ -1,4 +1,8 @@
-var ColorControl = function(handleValues) {
+import BaseControl from "BaseControl";
+
+export default ColorControl;
+
+function ColorControl(handleValues) {
   BaseControl.call(this);
   this.x = 0;
   this.y = 0;

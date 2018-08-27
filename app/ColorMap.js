@@ -1,4 +1,6 @@
-var ColorMap = function(min = 0, max = 1, levels = 10) {
+export default ColorMap;
+
+function ColorMap(min = 0, max = 1, levels = 10) {
   this.min = min;
   this.max = max;
   this.scaleMin = 0;

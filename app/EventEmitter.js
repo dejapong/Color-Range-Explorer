@@ -1,3 +1,5 @@
+export default EventEmitter;
+
 function EventEmitter() {
   this.listeners = {};
 }
