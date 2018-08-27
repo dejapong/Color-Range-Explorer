@@ -24,7 +24,8 @@ function RangeControls(options, width = 400, height = 70) {
 	this.canvas.className = "colorRangeControls"
 	this.container.appendChild(this.canvas);
 	this.container.appendChild(this.controls);
-	this.canvas.style = "width:100%;height:100px;background:#000";
+
+	Object.assign(this.canvas.style, {width:"100%",height:`${height}px`,background:"#000"});
 	this.ctx = this.canvas.getContext("2d");
 	this.width = width;
 	this.height = height;
