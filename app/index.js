@@ -6,6 +6,7 @@ import ColorMap from "ColorMap";
 
 window.ColorRangeExplorer = function (id, options = {}) {
 
+
   options = Object.assign({
     inputSelection : null,
     currentInput : null,
@@ -17,7 +18,11 @@ window.ColorRangeExplorer = function (id, options = {}) {
     scaleMax : 1,
     mapMin : 0,
     mapMax : 1,
+    imageMin : 0,
+    imageMax : 1,
+    title : ""
   }, options );
+
 
   let container = document.getElementById(id);
   let rangeControls = new RangeControls(options);
@@ -26,19 +31,19 @@ window.ColorRangeExplorer = function (id, options = {}) {
   let extScaleControls = document.createElement("div");
   let minInput = document.createElement("input");
   let maxInput = document.createElement("input");
-  let resetBtn = document.createElement("input");
+  let titleSpan = document.createElement("span");
 
-  resetBtn.type = "button";
-  resetBtn.value = "Fit Data";
+  extScaleControls.className = "colorRangeScaleCtrls";
   minInput.className = "colorRangeMinInput";
   maxInput.className = "colorRangeMaxInput";
-  minInput.size = 5;
-  maxInput.size = 5;
+  minInput.size = 7;
+  maxInput.size = 7;
   minInput.tabIndex = 1;
   maxInput.tabIndex = 2;
-  resetBtn.tabIndex = 3;
+  titleSpan.innerHTML = options.title;
+
   extScaleControls.appendChild(minInput);
-  extScaleControls.appendChild(resetBtn);
+  extScaleControls.appendChild(titleSpan);
   extScaleControls.appendChild(maxInput);
 
   let extColorControls = document.createElement("div");
@@ -49,7 +54,7 @@ window.ColorRangeExplorer = function (id, options = {}) {
   let levelsLabel = document.createElement("label");
   let levelsInput = document.createElement("input");
 
-  extColorControls.className = "colorRangeControls";
+  extColorControls.className = "colorRangeExtCtrls";
   inputLabel.innerHTML = "Input";
   mapLabel.innerHTML = "Map";
   levelsLabel.innerHTML = "Levels";
@@ -83,14 +88,15 @@ window.ColorRangeExplorer = function (id, options = {}) {
 
   container.appendChild(extColorControls);
   container.appendChild(output.container);
-  container.appendChild(extScaleControls);
   container.appendChild(rangeControls.container);
+  container.appendChild(extScaleControls);
 
   output.addEventListener("resize", function(event) {
     Object.assign(container.style, {width: `${event.width}px`});
     rangeControls.resize(event.width, rangeControls.height);
   });
 
+  let redrawTimeout;
   rangeControls.addEventListener("change", (e) => {
     output.redraw();
     minInput.value = rangeControls.scale.min.toFixed(2);
@@ -100,22 +106,20 @@ window.ColorRangeExplorer = function (id, options = {}) {
 
   minInput.addEventListener("change", function (e) {
     rangeControls.setScaleMin(e.target.value);
+    rangeControls.scale.dX = 0;
   });
 
   maxInput.addEventListener("change", function (e) {
     rangeControls.setScaleMax(e.target.value);
+    rangeControls.scale.dX = 0;
   });
 
   levelsInput.addEventListener("change", function (e) {
     rangeControls.setLevels(e.target.value);
   });
 
-  resetBtn.addEventListener("click", function (e) {
-    rangeControls.reset();
-  });
-
   inputSelect.addEventListener("change", function (e) {
-    output.loadImage(this.value);
+    output.loadImage(this.value, options.imageMin, options.imageMax);
   });
 
   mapSelect.addEventListener("change", function (e) {
@@ -125,7 +129,7 @@ window.ColorRangeExplorer = function (id, options = {}) {
   });
 
   if (options.currentInput) {
-    output.loadImage(options.currentInput);
+    output.loadImage(options.currentInput, options.imageMin, options.imageMax);
   }
 
   if (options.currentMap) {

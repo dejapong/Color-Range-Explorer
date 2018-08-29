@@ -34,6 +34,7 @@ ColorControl.prototype.redraw = function(ctx, map, scale) {
       let value = columnFraction * scaleSize + scale.min;
       let color = map.evaluate(value);
       let colPixIndex = column * 4;
+      color[3] = 255;
 
       for (let k = 0; k < color.length; k++) {
         imgData.data[rowPixIndex + colPixIndex + k] = color[k];

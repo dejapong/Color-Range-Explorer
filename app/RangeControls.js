@@ -3,10 +3,10 @@ import EventEmitter from "EventEmitter";
 import ColorControl from "ColorControl";
 import ScaleControl from "ScaleControl";
 import ColorMap from "ColorMap";
-
+import Hammer from "hammerjs"
 export default RangeControls;
 
-function RangeControls(options, width = 400, height = 70) {
+function RangeControls(options, width = 400, height = 100) {
 
 	EventEmitter.call(this);
 
@@ -17,7 +17,7 @@ function RangeControls(options, width = 400, height = 70) {
 		mapMax : 1,
     numLevels : 5
   }, options );
-
+	this.options = options;
 	this.container = document.createElement("div");
 	this.canvas = document.createElement("canvas");
 	this.controls = document.createElement("div");
@@ -38,7 +38,17 @@ function RangeControls(options, width = 400, height = 70) {
 	window.addEventListener("mousemove", this._onMouseMove.bind(this));
 	window.addEventListener("mousedown", this._onMouseDown.bind(this));
 	window.addEventListener("mouseup", this._onMouseUp.bind(this));
+	window.addEventListener("dblclick", this.reset.bind(this));
 	window.addEventListener("wheel", this._onWheel.bind(this));
+
+	let hammer = new Hammer(this.canvas);
+	hammer.get('pinch').set({ enable: true });
+	hammer.on("pinchstart", this._onPinchStart.bind(this));
+	hammer.on("pinch", this._onPinch.bind(this));
+
+	window.addEventListener("touchmove", this._onTouchMove.bind(this), false);
+	window.addEventListener("touchstart", this._onTouchStart.bind(this), false);
+	window.addEventListener("touchend", this._onTouchEnd.bind(this), false);
 
 	this.colorBar.addEventListener("change", this._onColorControlChange.bind(this));
 	this.scale.addEventListener("change", this._onScaleControlChange.bind(this));
@@ -167,6 +177,53 @@ RangeControls.prototype._onMouseUp = function(e){
 	}
 }
 
+RangeControls.prototype._onTouchStart = function(e){
+	if (e.target == this.canvas) {
+		document.body.style.overflow = "hidden";
+		e.screenX = e.touches[0].screenX;
+		e.screenY = e.touches[0].screenY;
+		e.offsetX = e.touches[0].pageX - e.touches[0].target.offsetLeft;
+		e.offsetY = e.touches[0].pageY - e.touches[0].target.offsetTop;
+		this._initUserMouse(e);
+		this.userMouse.down.handleMouseDown(e);
+	}
+}
+
+RangeControls.prototype._onTouchEnd = function(e){
+	document.body.style.overflow = "auto";
+	if (this.userMouse.down) {
+		e.userMouse = this.userMouse;
+		this.userMouse.down.handleMouseUp(e)
+		this.userMouse.down = null;
+	}
+}
+
+RangeControls.prototype._onTouchMove = function(e){
+
+	if (this.userMouse.down) {
+		e.screenX = e.touches[0].screenX;
+		e.screenY = e.touches[0].screenY;
+		e.userMouse = this.userMouse;
+		this.userMouse.down.handleMouseDrag(e)
+	}
+}
+
+RangeControls.prototype._onPinchStart = function(e){
+	this.userMouse.lastScale = 1;
+}
+
+RangeControls.prototype._onPinch = function(e){
+	e.offsetX = e.center.x - e.target.offsetLeft;
+	e.offsetY = e.center.y - e.target.offsetTop;
+	e.deltaY = this.width * (e.scale - this.userMouse.lastScale);
+	this.userMouse.lastScale = e.scale;
+
+	console.log(e.deltaY, );
+	this._initUserMouse(e);
+	this.userMouse.down.handleWheel(e)
+	this.userMouse.down = null;
+}
+
 RangeControls.prototype.redraw = function() {
 	this.colorBar.redraw(this.ctx, this.map, this.scale);
 	this.scale.redraw(this.ctx);
@@ -224,10 +281,10 @@ RangeControls.prototype.setLevels = function(value) {
 }
 
 RangeControls.prototype.reset = function() {
-	this.map.min = 0;
-	this.map.max = 1;
-	this.scale.min = 0;
-	this.scale.max = 1;
+	this.map.min = this.options.imageMin;
+	this.map.max = this.options.imageMax;
+	this.scale.min = this.options.imageMin;
+	this.scale.max = this.options.imageMax;
 	this.scale.dX = 0;
 	this.dispatchEvent(new Event("change"));
 	requestAnimationFrame(this.redraw.bind(this));

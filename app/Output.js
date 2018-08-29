@@ -1,5 +1,6 @@
 import EventEmitter from "EventEmitter";
 
+
 export default Output;
 
 function Output(selector) {
@@ -18,6 +19,9 @@ function Output(selector) {
   this.canvas.addEventListener("mousemove", this._onMouseMove.bind(this))
   this.canvas.addEventListener("mouseout", this._onMouseOut.bind(this))
   this.tooltip.className = "colorRangeTooltip";
+  this.renderWorker = new Worker('/assets/Color-Range-Explorer/dist/RenderWorker.js');
+
+  this.renderWorker.onmessage = this._renderMessage.bind(this);
 }
 
 Output.prototype = Object.create(EventEmitter.prototype);
@@ -28,7 +32,7 @@ Output.prototype._onMouseOut = function(e) {
 
 Output.prototype._onMouseMove = function(e) {
   let pixelIndex = 4 * (e.offsetY * this.canvas.width + e.offsetX);
-  Object.assign(this.tooltip.style, {display:"block", left: e.pageX, top: e.pageY + 20})
+  Object.assign(this.tooltip.style, {display:"block", left: `${e.pageX}px`, top: `${e.pageY + 20}px`});
   this.tooltip.innerHTML = this._valueFromPixel(this.rawImageData.data, pixelIndex).toFixed(2);
 }
 
@@ -36,11 +40,22 @@ Output.prototype._valueFromPixel = function(data, index) {
   let r = data[index + 0];
   let g = data[index + 1];
   let b = data[index + 2];
-  return (r  + g + b) / 3 / 255;
+  return (this.max - this.min) * (r  + g + b) / 3 / 255 + this.min;
 }
 
-Output.prototype.loadImage = function(url) {
+Output.prototype._renderMessage = function(e) {
+  this.outputData.data.set(e.data);
+  requestAnimationFrame(()=>this.ctx.putImageData(this.outputData, 0, 0));
+  this.drawing = false;
+  if (this.nextRedrawRequest) {
+    this.redraw();
+  }
+}
+
+Output.prototype.loadImage = function(url, min, max) {
   let img = new Image();
+  this.min = min;
+  this.max = max;
 
   img.onload = ()=> {
     this.canvas.width = img.width;
@@ -53,7 +68,14 @@ Output.prototype.loadImage = function(url) {
     event.height = img.height;
 
     this.dispatchEvent(event);
-    requestAnimationFrame(this.redraw.bind(this));
+    this.renderWorker.postMessage({
+      data: this.rawImageData.data,
+      min : min,
+      max : max
+    });
+
+    this.outputData = this.ctx.createImageData(img.width, img.height);
+    this.redraw();
   };
 
   img.src = url;
@@ -61,25 +83,22 @@ Output.prototype.loadImage = function(url) {
 
 Output.prototype.redraw = function() {
 
-  if (this.rawImageData && this.selector) {
+  if (this.drawing || !this.nextRedrawRequest) {
+    this.nextRedrawRequest = {
+      redraw : true,
+      mapMin : this.selector.map.min,
+      mapMax : this.selector.map.max,
+      scaleMin : this.selector.scale.min,
+      scaleMax : this.selector.scale.max,
+      levels : this.selector.map.levels,
+      type : this.selector.map.type
+    };
+  }
 
-    let outputData = this.ctx.createImageData(this.canvas.width, this.canvas.height);
-    let inputData = this.rawImageData;
-
-    for (let i =0; i < inputData.data.length ; i +=4) {
-      let value = this._valueFromPixel(inputData.data, i);
-      let colors = this.selector.evaluate(value);
-      let dr = colors[0];
-      let dg = colors[1];
-      let db = colors[2];
-      let da = inputData.data[i + 3];
-
-      outputData.data[i + 0] = dr;
-      outputData.data[i + 1] = dg;
-      outputData.data[i + 2] = db;
-      outputData.data[i + 3] = da;
-    }
-
-    this.ctx.putImageData(outputData, 0, 0)
+  if (!this.drawing && this.outputData) {
+    this.drawing = true;
+    this.renderWorker.postMessage(this.nextRedrawRequest);
+    this.nextRedrawRequest = null;
   }
 }
+

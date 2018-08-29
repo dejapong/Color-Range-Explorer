@@ -19,40 +19,40 @@ ColorMap.types = {
     let red = rnValue * 3.5 - 1.0;
     let green = rnValue < 0.5 ? rnValue * 2.0 : rnValue * -2.0 + 2.0;
     let blue = rnValue * -2.0 + 1;
-    return this._clippedNormalizedUint8Array([red, green, blue, 1.0]);
+    return this._clippedNormalizedUint8Array([red, green, blue]);
   },
   "heat" :  function(value){
     let rnValue = this._recodedNormalizedValue(value);
     let red = rnValue * 3 ;
     let green = rnValue * 3 - 1;
     let blue = rnValue * 3 - 2;
-    return this._clippedNormalizedUint8Array([red, green, blue, 1.0]);
+    return this._clippedNormalizedUint8Array([red, green, blue]);
   },
   "twoColor" : function(value) {
     let rnValue = this._recodedNormalizedValue(value);
     let red = rnValue >= 0.5 ? 1 * rnValue: 0;
     let green = 0;
     let blue = rnValue < 0.5 ? 1 * rnValue : 0;
-    return this._clippedNormalizedUint8Array([red, green, blue, 1.0]);
+    return this._clippedNormalizedUint8Array([red, green, blue]);
   },
   "terrain" : function(value) {
     let rnValue = this._recodedNormalizedValue(value);
-    let out = [0, 0, 0, 1.0];
+    let out = [0, 0, 0];
     if (rnValue < .25) {
       out[1] = rnValue * 3;
       out[2] = rnValue * 4 + .25;
     } else if (rnValue < 0.3) {
-      out[0] = 0.9 * rnValue * 3.3;
-      out[1] = 0.9 * rnValue * 3.3;
-      out[2] = 0.7 * rnValue * 3.3;
-    } else if (rnValue < 0.8) {
-      out[0] = 0.2 * (0.5 - rnValue);
-      out[1] = 0.8 * (0.8 - rnValue);
-      out[2] = 0.3 * (0.5 - rnValue);
+      out[0] = 0.9 * rnValue * 4;
+      out[1] = 0.9 * rnValue * 4;
+      out[2] = 0.7 * rnValue * 4;
+    } else if (rnValue < 0.9) {
+      out[0] = 0.4 * (0.4 - rnValue) + 0.1;
+      out[1] = 0.8 * (0.8 - rnValue) + 0.3;
+      out[2] = 0.4 * (0.4 - rnValue) + 0.1;
     } else {
-      out[0] = (rnValue - 0.8)/0.2;
-      out[1] = (rnValue - 0.8)/0.2;
-      out[2] = (rnValue - 0.8)/0.2;
+      out[0] = (rnValue - 0.9)/0.2 + 0.2;
+      out[1] = (rnValue - 0.9)/0.2 + 0.2;
+      out[2] = (rnValue - 0.9)/0.2 + 0.2;
     }
     return this._clippedNormalizedUint8Array(out);
   }
@@ -78,5 +78,6 @@ ColorMap.prototype._clippedNormalizedUint8Array = function(colors) {
 }
 
 ColorMap.prototype.setType = function(type) {
+  this.type = type;
   this.evaluate = ColorMap.types[type];
 }

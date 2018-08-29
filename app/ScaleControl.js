@@ -22,7 +22,7 @@ ScaleControl.prototype.redraw = function(ctx) {
   ctx.fillStyle = "#ffffff";
   ctx.strokeStyle = "#000000";
   ctx.lineWidth = this.hovering ? 2 : 1;
-  ctx.font = this.hovering ? "bold 10pt Courier" :  "10pt Courier";
+  ctx.font = this.hovering ? "bold 12px Courier" :  "12px Courier";
   ctx.fillRect(this.x, this.y, this.width, this.height);
   ctx.beginPath();
 
@@ -30,7 +30,7 @@ ScaleControl.prototype.redraw = function(ctx) {
   ctx.lineTo(this.x + this.width, this.y);
 
   let labelHeight = 20;
-  let labelPadding = 5;
+  let labelPadding = 6;
   let majorTickSpace = (this.width / (this.numMajorTicks - 1));
   let minorTickSpace = (majorTickSpace / this.numMinorDivs );
   let majorTickLowerY = this.y + (this.height - labelHeight);
@@ -78,10 +78,6 @@ ScaleControl.prototype.redraw = function(ctx) {
   }
 
   ctx.stroke();
-}
-
-ScaleControl.prototype.handleWheel = function(e) {
-  BaseControl.prototype.handleWheel.call(this, e);
 }
 
 ScaleControl.prototype.handleMouseDown = function(e) {

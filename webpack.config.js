@@ -1,12 +1,16 @@
 var path = require('path');
 
 module.exports = {
-  mode:"production",
+  // mode:"production",
+  mode:"development",
   context: __dirname + "/app",
-  entry: "./index.js",
+  entry: {
+    "colorRangeExplorer.min": "./index.js",
+    "RenderWorker": './RenderWorker.js'
+  },
   output: {
     path: __dirname + "/dist",
-    filename: "colorRangeExplorer.min.js"
+    filename: "[name].js"
   },
   resolve: {
     modules: ["app", "node_modules"],
