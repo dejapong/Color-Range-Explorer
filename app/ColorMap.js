@@ -24,15 +24,15 @@ ColorMap.types = {
   "heat" :  function(value){
     let rnValue = this._recodedNormalizedValue(value);
     let red = rnValue * 3 ;
-    let green = rnValue * 3 - 1;
-    let blue = rnValue * 3 - 2;
+    let green = rnValue * 3 - 0.67;
+    let blue = rnValue * 3 - 1.67;
     return this._clippedNormalizedUint8Array([red, green, blue]);
   },
-  "twoColor" : function(value) {
+  "bipolar" : function(value) {
     let rnValue = this._recodedNormalizedValue(value);
-    let red = rnValue >= 0.5 ? 1 * rnValue: 0;
-    let green = 0;
-    let blue = rnValue < 0.5 ? 1 * rnValue : 0;
+    let red = rnValue   < 0.5 ? rnValue * 2 : 1;
+    let green = rnValue < 0.5 ? rnValue * 2 : (1 - rnValue) * 2;
+    let blue = rnValue  < 0.5 ? 1 : (1 - rnValue) * 2;
     return this._clippedNormalizedUint8Array([red, green, blue]);
   },
   "terrain" : function(value) {

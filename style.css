@@ -1,0 +1,52 @@
+.creExample {
+  margin: auto;
+}
+
+.colorRangeOutput {
+  cursor: crosshair;
+  background:#eeeeee;
+}
+.colorRangeControls {
+  border: 1px solid #ffffff;
+  cursor: move;
+}
+.colorRangeMinInput,.colorRangeMaxInput {
+  padding:3px;
+  font-family: "Courier", monospace;
+  border: 1px solid #ffffff;
+  background:#ffa;
+  font-size:12px;
+  font-weight: bold;
+  border-top-width: 0px;
+}
+.colorRangeMinInput {
+  text-align: left;
+}
+.colorRangeMaxInput {
+  text-align: right;
+}
+.colorRangeTooltip {
+  background: #ffffff;
+  padding: 3px;
+  border-radius: 3px;
+}
+.colorRangeScaleCtrls {
+  display: flex;
+  font-family: "Courier", monospace;
+  font-size:12px;
+  text-align: center;
+}
+.colorRangeScaleCtrls span{
+  margin: 0px 20px;
+  flex-grow: 1;
+}
+.colorRangeExtCtrls select{
+  max-width: 100px;
+}
+.colorRangeExtCtrls label{
+  margin-left:10px;
+  margin-right:3px;
+}
+a {
+  cursor: pointer;
+}

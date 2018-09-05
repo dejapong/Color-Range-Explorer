@@ -38,7 +38,7 @@ function RangeControls(options, width = 400, height = 100) {
 	window.addEventListener("mousemove", this._onMouseMove.bind(this));
 	window.addEventListener("mousedown", this._onMouseDown.bind(this));
 	window.addEventListener("mouseup", this._onMouseUp.bind(this));
-	window.addEventListener("dblclick", this.reset.bind(this));
+	window.addEventListener("dblclick", this._onMouseDblClick.bind(this));
 	window.addEventListener("wheel", this._onWheel.bind(this));
 
 	let hammer = new Hammer(this.canvas);
@@ -131,6 +131,12 @@ RangeControls.prototype._onMouseDown = function(e){
 	if (e.target == this.canvas) {
 		this._initUserMouse(e);
 		this.userMouse.down.handleMouseDown(e);
+	}
+}
+
+RangeControls.prototype._onMouseDblClick = function(e){
+	if (e.target == this.canvas) {
+		this.reset();
 	}
 }
 

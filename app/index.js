@@ -6,7 +6,6 @@ import ColorMap from "ColorMap";
 
 window.ColorRangeExplorer = function (id, options = {}) {
 
-
   options = Object.assign({
     inputSelection : null,
     currentInput : null,
@@ -18,11 +17,10 @@ window.ColorRangeExplorer = function (id, options = {}) {
     scaleMax : 1,
     mapMin : 0,
     mapMax : 1,
-    imageMin : 0,
+    imageMiorn : 0,
     imageMax : 1,
     title : ""
   }, options );
-
 
   let container = document.getElementById(id);
   let rangeControls = new RangeControls(options);
@@ -96,7 +94,6 @@ window.ColorRangeExplorer = function (id, options = {}) {
     rangeControls.resize(event.width, rangeControls.height);
   });
 
-  let redrawTimeout;
   rangeControls.addEventListener("change", (e) => {
     output.redraw();
     minInput.value = rangeControls.scale.min.toFixed(2);
@@ -135,6 +132,8 @@ window.ColorRangeExplorer = function (id, options = {}) {
   if (options.currentMap) {
     rangeControls.map.setType(options.currentMap);
   }
+
+  this.rangeControls = rangeControls;
 }
 
 window.ColorRangeExplorer.COLOR_MAP_TYPES = Object.keys(ColorMap.types);
